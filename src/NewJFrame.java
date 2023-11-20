@@ -32,6 +32,12 @@ public class NewJFrame extends javax.swing.JFrame {
     public NewJFrame() {
         initComponents();
         
+        // 프레임의 크기를 고정하고 싶은 경우
+        setSize(900, 700); // 가로 600, 세로 400 픽셀로 설정
+        setResizable(false); // 크기 조정 불가능하게 설정
+        // 프레임을 화면의 중앙에 위치시킴
+        setLocationRelativeTo(null);
+        
         // CardLayout 초기화 및 적용
         cardLayout = new CardLayout();
         getContentPane().setLayout(cardLayout);
@@ -108,7 +114,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         signPanel = new javax.swing.JPanel();
-        txt_pwcheck = new javax.swing.JPasswordField();
+        sign_pwcheck = new javax.swing.JPasswordField();
         lbl_hurdle4 = new javax.swing.JLabel();
         lbl_title1 = new javax.swing.JLabel();
         lbl_id1 = new javax.swing.JLabel();
@@ -120,18 +126,24 @@ public class NewJFrame extends javax.swing.JFrame {
         btn_sign1 = new javax.swing.JButton();
         lbl_birth1 = new javax.swing.JLabel();
         btn_idcheck = new javax.swing.JButton();
-        txt_id = new javax.swing.JTextField();
+        sign_id = new javax.swing.JTextField();
         lbl_hurdle3 = new javax.swing.JLabel();
-        txt_name = new javax.swing.JTextField();
-        txt_pw = new javax.swing.JPasswordField();
-        txt_birth = new javax.swing.JTextField();
+        sign_name = new javax.swing.JTextField();
+        sign_pw = new javax.swing.JPasswordField();
+        sign_birth = new javax.swing.JTextField();
         loginPanel = new javax.swing.JPanel();
+        lbl_title = new javax.swing.JLabel();
+        lbl_id = new javax.swing.JLabel();
+        lbl_pw = new javax.swing.JLabel();
+        login_id = new javax.swing.JTextField();
+        login_pw = new javax.swing.JTextField();
+        btn_login1 = new javax.swing.JButton();
         btn_login = new javax.swing.JButton();
         btn_sign = new javax.swing.JButton();
 
-        txt_pwcheck.addKeyListener(new java.awt.event.KeyAdapter() {
+        sign_pwcheck.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txt_pwcheckKeyReleased(evt);
+                sign_pwcheckKeyReleased(evt);
             }
         });
 
@@ -171,22 +183,22 @@ public class NewJFrame extends javax.swing.JFrame {
         });
 
         lbl_hurdle3.setForeground(new java.awt.Color(255, 51, 51));
-        lbl_hurdle3.setText("비밀번호가 일치하지 않습니다.");
+        lbl_hurdle3.setText("비밀번호가 일치해야합니다.");
 
-        txt_pw.addActionListener(new java.awt.event.ActionListener() {
+        sign_pw.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_pwActionPerformed(evt);
+                sign_pwActionPerformed(evt);
             }
         });
-        txt_pw.addKeyListener(new java.awt.event.KeyAdapter() {
+        sign_pw.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txt_pwKeyReleased(evt);
+                sign_pwKeyReleased(evt);
             }
         });
 
-        txt_birth.addKeyListener(new java.awt.event.KeyAdapter() {
+        sign_birth.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txt_birthKeyReleased(evt);
+                sign_birthKeyReleased(evt);
             }
         });
 
@@ -195,12 +207,9 @@ public class NewJFrame extends javax.swing.JFrame {
         signPanelLayout.setHorizontalGroup(
             signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(signPanelLayout.createSequentialGroup()
+                .addContainerGap(209, Short.MAX_VALUE)
                 .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(signPanelLayout.createSequentialGroup()
-                        .addGap(338, 338, 338)
-                        .addComponent(lbl_title1))
-                    .addGroup(signPanelLayout.createSequentialGroup()
-                        .addGap(124, 124, 124)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signPanelLayout.createSequentialGroup()
                         .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(signPanelLayout.createSequentialGroup()
                                 .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -213,74 +222,121 @@ public class NewJFrame extends javax.swing.JFrame {
                                     .addComponent(lbl_hurdle2, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lbl_hurdle3, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(signPanelLayout.createSequentialGroup()
-                                        .addComponent(txt_id, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(sign_id, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(37, 37, 37)
                                         .addComponent(btn_idcheck))
                                     .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(txt_pwcheck, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
-                                        .addComponent(txt_pw, javax.swing.GroupLayout.Alignment.LEADING))))
+                                        .addComponent(sign_pwcheck, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(sign_pw, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(signPanelLayout.createSequentialGroup()
                                 .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lbl_name1)
                                     .addComponent(lbl_birth1))
-                                .addGap(61, 61, 61)
+                                .addGap(89, 89, 89)
                                 .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txt_birth, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txt_name, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lbl_hurdle4, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(signPanelLayout.createSequentialGroup()
-                                .addGap(216, 216, 216)
-                                .addComponent(btn_sign1)))))
-                .addContainerGap(68, Short.MAX_VALUE))
+                                    .addComponent(lbl_hurdle4, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(sign_birth, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(sign_name, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(169, 169, 169))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signPanelLayout.createSequentialGroup()
+                        .addComponent(lbl_title1)
+                        .addGap(417, 417, 417))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signPanelLayout.createSequentialGroup()
+                        .addComponent(btn_sign1)
+                        .addGap(407, 407, 407))))
         );
         signPanelLayout.setVerticalGroup(
             signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(signPanelLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(35, 35, 35)
                 .addComponent(lbl_title1)
-                .addGap(26, 26, 26)
+                .addGap(59, 59, 59)
                 .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_id1)
-                    .addComponent(txt_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sign_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_idcheck))
                 .addGap(28, 28, 28)
                 .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_pw1)
-                    .addComponent(txt_pw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(sign_pw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
                 .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_pwcheck1)
-                    .addComponent(txt_pwcheck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(sign_pwcheck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addComponent(lbl_hurdle1)
                 .addGap(18, 18, 18)
                 .addComponent(lbl_hurdle2)
                 .addGap(18, 18, 18)
                 .addComponent(lbl_hurdle3)
-                .addGap(12, 12, 12)
-                .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(15, 15, 15)
+                .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_name1)
-                    .addComponent(txt_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
+                    .addComponent(sign_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
                 .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_birth1)
-                    .addComponent(txt_birth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(sign_birth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbl_hurdle4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 187, Short.MAX_VALUE)
                 .addComponent(btn_sign1)
-                .addGap(37, 37, 37))
+                .addGap(30, 30, 30))
         );
+
+        lbl_title.setText("로그인");
+
+        lbl_id.setText("아이디");
+
+        lbl_pw.setText("비밀번호");
+
+        btn_login1.setText("로그인");
+        btn_login1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_login1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout loginPanelLayout = new javax.swing.GroupLayout(loginPanel);
         loginPanel.setLayout(loginPanelLayout);
         loginPanelLayout.setHorizontalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 450, Short.MAX_VALUE)
+            .addGroup(loginPanelLayout.createSequentialGroup()
+                .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(loginPanelLayout.createSequentialGroup()
+                        .addGap(420, 420, 420)
+                        .addComponent(lbl_title))
+                    .addGroup(loginPanelLayout.createSequentialGroup()
+                        .addGap(176, 176, 176)
+                        .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbl_id)
+                            .addComponent(lbl_pw))
+                        .addGap(76, 76, 76)
+                        .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(login_pw, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(login_id, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(loginPanelLayout.createSequentialGroup()
+                        .addGap(406, 406, 406)
+                        .addComponent(btn_login1)))
+                .addContainerGap(283, Short.MAX_VALUE))
         );
         loginPanelLayout.setVerticalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 338, Short.MAX_VALUE)
+            .addGroup(loginPanelLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(lbl_title)
+                .addGap(88, 88, 88)
+                .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_id)
+                    .addComponent(login_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(108, 108, 108)
+                .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_pw)
+                    .addComponent(login_pw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(102, 102, 102)
+                .addComponent(btn_login1)
+                .addContainerGap(287, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -304,20 +360,20 @@ public class NewJFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(209, 209, 209)
+                .addGap(208, 208, 208)
                 .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(146, 146, 146)
+                .addGap(150, 150, 150)
                 .addComponent(btn_sign)
-                .addContainerGap(259, Short.MAX_VALUE))
+                .addContainerGap(256, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(241, 241, 241)
+                .addGap(304, 304, 304)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_sign, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(311, Short.MAX_VALUE))
+                    .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_sign, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(248, Short.MAX_VALUE))
         );
 
         pack();
@@ -328,18 +384,18 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_loginActionPerformed
 
     
-    private void txt_pwcheckKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_pwcheckKeyReleased
-        if (String.valueOf(txt_pw.getPassword()).equals(String.valueOf(txt_pwcheck.getPassword())) ) {
+    private void sign_pwcheckKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sign_pwcheckKeyReleased
+        if (String.valueOf(sign_pw.getPassword()).equals(String.valueOf(sign_pwcheck.getPassword())) ) {
             lbl_hurdle3.setForeground(new Color(0,204,102));    
         }
-    }//GEN-LAST:event_txt_pwcheckKeyReleased
+    }//GEN-LAST:event_sign_pwcheckKeyReleased
 
     private void btn_sign1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sign1ActionPerformed
             strSQL = "Insert Into user Values (";
-            strSQL += "'" + txt_id.getText() + "', ";
-            strSQL += "'" + txt_pwcheck.getText() + "', ";
-            strSQL += "'" + txt_name.getText() + "', ";
-            strSQL += "'" + txt_birth.getText() + "')";
+            strSQL += "'" + sign_id.getText() + "', ";
+            strSQL += "'" + sign_pwcheck.getText() + "', ";
+            strSQL += "'" + sign_name.getText() + "', ";
+            strSQL += "'" + sign_birth.getText() + "')";
 
             try {
                 DBM.dbOpen();
@@ -347,14 +403,17 @@ public class NewJFrame extends javax.swing.JFrame {
                 strSQL = "Select * From user";
                 getDBData(strSQL);
                 JOptionPane.showMessageDialog(null, "회원가입 완료");
+                // 회원가입 성공 후, 초기 화면으로 돌아가기
+                cardLayout.show(getContentPane(), "InitialPanel");
                 DBM.dbClose();
             } catch (Exception e) {
                 System.out.println("SQLException: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "회원가입 처리 중 오류가 발생했습니다.");
             }
     }//GEN-LAST:event_btn_sign1ActionPerformed
 
     private void btn_idcheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_idcheckActionPerformed
-        String ID = txt_id.getText();
+        String ID = sign_id.getText();
         strSQL = "SELECT id FROM user WHERE id = '" + ID + "'";
         
         if(ID.contains(" ")){
@@ -379,39 +438,70 @@ public class NewJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btn_idcheckActionPerformed
 
-    private void txt_pwActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_pwActionPerformed
+    private void sign_pwActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sign_pwActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txt_pwActionPerformed
+    }//GEN-LAST:event_sign_pwActionPerformed
     
-    private void txt_pwKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_pwKeyReleased
+    private void sign_pwKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sign_pwKeyReleased
         //String passwordPattern = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).*$";
         String passwordPattern = "^((?=.*[a-z])(?=.*\\d))";
-        if(String.valueOf(txt_pw.getPassword()).length() >= 8){
+        if(String.valueOf(sign_pw.getPassword()).length() >= 8){
             lbl_hurdle2.setForeground(new Color(0,204,102));
         }
         
         // 정규식 검사
-        if (Pattern.matches(passwordPattern, String.valueOf(txt_pw.getPassword()))) {
+        if (Pattern.matches(passwordPattern, String.valueOf(sign_pw.getPassword()))) {
             lbl_hurdle1.setForeground(new Color(0,204,102)); 
         } 
-    }//GEN-LAST:event_txt_pwKeyReleased
+    }//GEN-LAST:event_sign_pwKeyReleased
 
-    private void txt_birthKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_birthKeyReleased
-        String birth = txt_birth.getText();
+    private void sign_birthKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sign_birthKeyReleased
+        String birth = sign_birth.getText();
         
         if (birth.length() > 8) {
         // 입력이 8자리를 초과하는 경우, 입력을 무시하고 이전 상태로 되돌립니다.
-            txt_birth.setText(birth.substring(0, 8));     
+            sign_birth.setText(birth.substring(0, 8));     
         }
   
         if(birth.length() == 8){
             lbl_hurdle4.setForeground(new Color(0,204,102));
         }
-    }//GEN-LAST:event_txt_birthKeyReleased
+    }//GEN-LAST:event_sign_birthKeyReleased
 
     private void btn_signActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_signActionPerformed
         cardLayout.show(getContentPane(), "SignPanel");
     }//GEN-LAST:event_btn_signActionPerformed
+
+    private void btn_login1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_login1ActionPerformed
+        // 사용자가 입력한 아이디와 비밀번호
+        String userId = login_id.getText();
+        String userPw = login_pw.getText();
+
+        // 아이디와 비밀번호 필드가 비어 있는지 확인
+        if(userId.isEmpty() || userPw.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "아이디와 비밀번호를 입력해주세요.");
+        } else {
+            // 데이터베이스에서 사용자 정보를 조회하는 SQL 쿼리
+            String strSQL = "SELECT * FROM user WHERE id = '" + userId + "' AND pw = '" + userPw + "'";
+            try {
+                DBM.dbOpen();
+                DBM.DB_rs = DBM.DB_stmt.executeQuery(strSQL);
+                
+                if(DBM.DB_rs.next()) { // 결과가 있으면 로그인 성공
+                    JOptionPane.showMessageDialog(null, "로그인에 성공하였습니다.");
+                    // 여기에 로그인 성공 후의 로직을 추가하세요.
+                } else { // 결과가 없으면 로그인 실패
+                    JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호가 일치하지 않습니다.");
+                }
+
+                DBM.DB_rs.close();
+                DBM.dbClose();
+            } catch (Exception e) {
+                System.out.println("SQLException: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "로그인 처리 중 오류가 발생했습니다.");
+            }
+        }
+    }//GEN-LAST:event_btn_login1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -451,6 +541,7 @@ public class NewJFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_idcheck;
     private javax.swing.JButton btn_login;
+    private javax.swing.JButton btn_login1;
     private javax.swing.JButton btn_sign;
     private javax.swing.JButton btn_sign1;
     private javax.swing.JLabel lbl_birth1;
@@ -458,17 +549,22 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_hurdle2;
     private javax.swing.JLabel lbl_hurdle3;
     private javax.swing.JLabel lbl_hurdle4;
+    private javax.swing.JLabel lbl_id;
     private javax.swing.JLabel lbl_id1;
     private javax.swing.JLabel lbl_name1;
+    private javax.swing.JLabel lbl_pw;
     private javax.swing.JLabel lbl_pw1;
     private javax.swing.JLabel lbl_pwcheck1;
+    private javax.swing.JLabel lbl_title;
     private javax.swing.JLabel lbl_title1;
     private javax.swing.JPanel loginPanel;
+    private javax.swing.JTextField login_id;
+    private javax.swing.JTextField login_pw;
     private javax.swing.JPanel signPanel;
-    private javax.swing.JTextField txt_birth;
-    private javax.swing.JTextField txt_id;
-    private javax.swing.JTextField txt_name;
-    private javax.swing.JPasswordField txt_pw;
-    private javax.swing.JPasswordField txt_pwcheck;
+    private javax.swing.JTextField sign_birth;
+    private javax.swing.JTextField sign_id;
+    private javax.swing.JTextField sign_name;
+    private javax.swing.JPasswordField sign_pw;
+    private javax.swing.JPasswordField sign_pwcheck;
     // End of variables declaration//GEN-END:variables
 }
