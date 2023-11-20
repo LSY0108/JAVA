@@ -10,10 +10,15 @@
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Insets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.regex.Pattern;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import java.awt.Image;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -31,6 +36,7 @@ public class NewJFrame extends javax.swing.JFrame {
     
     public NewJFrame() {
         initComponents();
+        customizeComponents();
         
         // 프레임의 크기를 고정하고 싶은 경우
         setSize(900, 700); // 가로 600, 세로 400 픽셀로 설정
@@ -48,7 +54,7 @@ public class NewJFrame extends javax.swing.JFrame {
         initialPanel.add(btn_sign);
         
         // 초기 패널을 CardLayout에 추가
-         getContentPane().add(initialPanel, "InitialPanel");
+        getContentPane().add(initialPanel, "InitialPanel");
         // 패널을 CardLayout에 추가
         getContentPane().add(loginPanel, "LoginPanel");
         getContentPane().add(signPanel, "SignPanel");
@@ -70,7 +76,6 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
         
-        
         try{
             String strData = null;
             DBM.dbOpen();// 데이터베이스 연결을 열고,
@@ -79,8 +84,30 @@ public class NewJFrame extends javax.swing.JFrame {
         }catch(Exception e){
             System.out.println("NewJFrame.<init>()");
         }
+    }
+    
+    //버튼 css
+    private void customizeComponents() {
+        // 로그인 버튼에 이미지 추가 및 크기 조절
+        //ImageIcon loginIconRaw = new ImageIcon(getClass().getResource("/Image/loginButtonImage.png"));
+        //Image loginImage = loginIconRaw.getImage().getScaledInstance(120, 60, Image.SCALE_SMOOTH); // 여기서 120과 30은 새 이미지의 너비와 높이입니다.
+        //ImageIcon loginIcon = new ImageIcon(loginImage);
+        //btn_login.setIcon(loginIcon);
+        //btn_login.setBorderPainted(false);
+        //btn_login.setContentAreaFilled(false);
+        //btn_login.setFocusPainted(false);
+        //btn_login.setOpaque(false);
         
-        
+        // 회원가입 버튼에 이미지 추가 및 크기 조절
+        //ImageIcon signIconRaw = new ImageIcon(getClass().getResource("/Image/loginButtonImage.png"));
+        //Image signImage = signIconRaw.getImage().getScaledInstance(120, 60, Image.SCALE_SMOOTH); // 여기서 120과 30은 새 이미지의 너비와 높이입니다.
+        //ImageIcon signIcon = new ImageIcon(signImage);
+        //btn_sign.setIcon(signIcon);
+        //btn_sign.setBorderPainted(false);
+        //btn_sign.setContentAreaFilled(false);
+        //btn_sign.setFocusPainted(false);
+        //btn_sign.setOpaque(false);
+        //btn_sign.setBounds(200, 100, 150, 50);
     }
     
     // 데이터베이스에서 데이터를 가져와 JTextArea에 표시하는 메서드
@@ -131,6 +158,7 @@ public class NewJFrame extends javax.swing.JFrame {
         sign_name = new javax.swing.JTextField();
         sign_pw = new javax.swing.JPasswordField();
         sign_birth = new javax.swing.JTextField();
+        btn_back2 = new javax.swing.JButton();
         loginPanel = new javax.swing.JPanel();
         lbl_title = new javax.swing.JLabel();
         lbl_id = new javax.swing.JLabel();
@@ -138,6 +166,8 @@ public class NewJFrame extends javax.swing.JFrame {
         login_id = new javax.swing.JTextField();
         login_pw = new javax.swing.JTextField();
         btn_login1 = new javax.swing.JButton();
+        login_back = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
         btn_login = new javax.swing.JButton();
         btn_sign = new javax.swing.JButton();
 
@@ -202,6 +232,13 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
+        btn_back2.setText("뒤로가기");
+        btn_back2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_back2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout signPanelLayout = new javax.swing.GroupLayout(signPanel);
         signPanel.setLayout(signPanelLayout);
         signPanelLayout.setHorizontalGroup(
@@ -240,18 +277,23 @@ public class NewJFrame extends javax.swing.JFrame {
                                         .addComponent(sign_name, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(169, 169, 169))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signPanelLayout.createSequentialGroup()
-                        .addComponent(lbl_title1)
-                        .addGap(417, 417, 417))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signPanelLayout.createSequentialGroup()
                         .addComponent(btn_sign1)
                         .addGap(407, 407, 407))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signPanelLayout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(btn_back2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbl_title1)
+                .addGap(417, 417, 417))
         );
         signPanelLayout.setVerticalGroup(
             signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(signPanelLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(lbl_title1)
-                .addGap(59, 59, 59)
+                .addGap(32, 32, 32)
+                .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_title1)
+                    .addComponent(btn_back2))
+                .addGap(56, 56, 56)
                 .addGroup(signPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_id1)
                     .addComponent(sign_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -298,6 +340,13 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
+        login_back.setText("뒤로가기");
+        login_back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                login_backActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout loginPanelLayout = new javax.swing.GroupLayout(loginPanel);
         loginPanel.setLayout(loginPanelLayout);
         loginPanelLayout.setHorizontalGroup(
@@ -305,7 +354,9 @@ public class NewJFrame extends javax.swing.JFrame {
             .addGroup(loginPanelLayout.createSequentialGroup()
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(loginPanelLayout.createSequentialGroup()
-                        .addGap(420, 420, 420)
+                        .addGap(39, 39, 39)
+                        .addComponent(login_back)
+                        .addGap(303, 303, 303)
                         .addComponent(lbl_title))
                     .addGroup(loginPanelLayout.createSequentialGroup()
                         .addGap(176, 176, 176)
@@ -324,9 +375,11 @@ public class NewJFrame extends javax.swing.JFrame {
         loginPanelLayout.setVerticalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(loginPanelLayout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(lbl_title)
-                .addGap(88, 88, 88)
+                .addGap(26, 26, 26)
+                .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_title)
+                    .addComponent(login_back))
+                .addGap(85, 85, 85)
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_id)
                     .addComponent(login_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -337,6 +390,17 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addGap(102, 102, 102)
                 .addComponent(btn_login1)
                 .addContainerGap(287, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -360,20 +424,20 @@ public class NewJFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(208, 208, 208)
+                .addGap(207, 207, 207)
                 .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(150, 150, 150)
+                .addGap(153, 153, 153)
                 .addComponent(btn_sign)
-                .addContainerGap(256, Short.MAX_VALUE))
+                .addContainerGap(254, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(304, 304, 304)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_sign, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(248, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(280, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_sign, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(272, 272, 272))
         );
 
         pack();
@@ -439,7 +503,7 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_idcheckActionPerformed
 
     private void sign_pwActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sign_pwActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(getContentPane(), "InitialPanel");
     }//GEN-LAST:event_sign_pwActionPerformed
     
     private void sign_pwKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sign_pwKeyReleased
@@ -503,6 +567,14 @@ public class NewJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btn_login1ActionPerformed
 
+    private void login_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_login_backActionPerformed
+        cardLayout.show(getContentPane(), "InitialPanel");
+    }//GEN-LAST:event_login_backActionPerformed
+
+    private void btn_back2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_back2ActionPerformed
+        cardLayout.show(getContentPane(), "InitialPanel");
+    }//GEN-LAST:event_btn_back2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -539,11 +611,13 @@ public class NewJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_back2;
     private javax.swing.JButton btn_idcheck;
     private javax.swing.JButton btn_login;
     private javax.swing.JButton btn_login1;
     private javax.swing.JButton btn_sign;
     private javax.swing.JButton btn_sign1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lbl_birth1;
     private javax.swing.JLabel lbl_hurdle1;
     private javax.swing.JLabel lbl_hurdle2;
@@ -558,6 +632,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_title;
     private javax.swing.JLabel lbl_title1;
     private javax.swing.JPanel loginPanel;
+    private javax.swing.JButton login_back;
     private javax.swing.JTextField login_id;
     private javax.swing.JTextField login_pw;
     private javax.swing.JPanel signPanel;
