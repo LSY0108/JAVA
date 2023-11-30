@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -18,6 +20,11 @@ public class Main extends javax.swing.JFrame {
     private JLabel monthLabel;
     private JPanel calendarPanel;
     private JDialog memoListDialog = null;
+    
+    // Color 객체를 HEX 색상 코드 문자열로 변환하는 메서드
+    private String colorToString(Color color) {
+        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+    }
     
     // 메모 데이터를 저장하는 HashMap입니다.
     private HashMap<String, ArrayList<MemoInfo>> memoData = new HashMap<>();
@@ -115,7 +122,7 @@ public class Main extends javax.swing.JFrame {
             datePanel.add(dayLabel);
 
             // 날짜별로 저장된 메모의 색상 띠를 가져옵니다.
-            ArrayList<MemoInfo> memos = getMemosForDate(day, month, year);
+            ArrayList<MemoInfo> memos = loadMemosFromDB(day, month, year);
             if (!memos.isEmpty()) {
                 datePanel.add(Box.createVerticalStrut(1));
                 for (MemoInfo memo : memos) {
@@ -132,7 +139,7 @@ public class Main extends javax.swing.JFrame {
             datePanel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    ArrayList<MemoInfo> memos = getMemosForDate(day, month, year);
+                    ArrayList<MemoInfo> memos = loadMemosFromDB(day, month, year);
                     if (memos.isEmpty()) {
                         displayMemoEditor(null, day, month, year);
                     } else {
@@ -150,16 +157,13 @@ public class Main extends javax.swing.JFrame {
     
     // 메모 목록 표시 메서드
     private void displayMemoList(ArrayList<MemoInfo> memos, int day, int month, int year) {
-        if (memoListDialog == null) {
-            memoListDialog = new JDialog(this, "메모 목록", false);
-            memoListDialog.setLayout(new BorderLayout());
-            memoListDialog.setSize(300, 400);
-            memoListDialog.setLocationRelativeTo(this);
-        } else {
-            memoListDialog.getContentPane().removeAll(); // 내용을 모두 제거합니다.
+        // 기존에 열려있는 메모 목록 창을 닫습니다.
+        if (memoListDialog != null) {
+            memoListDialog.dispose();
         }
-        
-        JDialog memoListDialog = new JDialog(this, "메모 목록", true);
+
+        // 새로운 메모 목록 창을 생성합니다.
+        memoListDialog = new JDialog(this, "메모 목록", true);
         memoListDialog.setLayout(new BorderLayout());
         memoListDialog.setSize(300, 400);
         memoListDialog.setLocationRelativeTo(this);
@@ -271,7 +275,13 @@ public class Main extends javax.swing.JFrame {
 
         JButton deleteButton = createCustomButton("삭제하기");
         deleteButton.addActionListener(e -> {
-            // 삭제 로직 구현 필요
+            deleteMemo(memo.getSchedule_key());
+            memoDetailsDialog.dispose();
+            updateCalendar();
+            if (memoListDialog != null) {
+                memoListDialog.dispose();
+            }
+            displayMemoList(loadMemosFromDB(day, month, year), day, month, year);
         });
 
         buttonPanel.add(backButton);
@@ -285,6 +295,20 @@ public class Main extends javax.swing.JFrame {
         memoDetailsDialog.setVisible(true);
     }
     
+    // 메모를 데이터베이스에서 삭제하는 메서드
+    private void deleteMemo(int scheduleKey) {
+        String sql = "DELETE FROM Schedule WHERE schedule_key = ?";
+        try {
+            DBM.dbOpen();
+            PreparedStatement pstmt = DBM.prepareStatement(sql);
+            pstmt.setInt(1, scheduleKey);
+            pstmt.executeUpdate();
+            DBM.dbClose();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 커스텀 버튼을 생성하는 메서드
     private JButton createCustomButton(String text) {
         JButton button = new JButton(text);
@@ -325,9 +349,18 @@ public class Main extends javax.swing.JFrame {
         saveButton.addActionListener(e -> {
             String title = titleField.getText();
             String content = contentArea.getText();
-            saveMemo(day, month, year, title, content, chosenColor[0]);
+            int scheduleKey = memo != null ? memo.getSchedule_key() : -1;
+            Color color = chosenColor[0];
+
+            MemoInfo updatedMemo = new MemoInfo(scheduleKey, title, content, color);
+            saveMemo(userId, day, month, year, updatedMemo);
+
             memoEditorDialog.dispose();
             updateCalendar();
+
+            // 메모 목록을 업데이트합니다.
+            ArrayList<MemoInfo> updatedMemos = loadMemosFromDB(day, month, year);
+            displayMemoList(updatedMemos, day, month, year);
         });
         buttonPanel.add(saveButton);
 
@@ -373,7 +406,7 @@ public class Main extends javax.swing.JFrame {
             add(scheduleListPanel, BorderLayout.CENTER);
 
             // 저장된 일정을 리스트에 표시합니다.
-            ArrayList<MemoInfo> memos = getMemosForDate(day, month, year);
+            ArrayList<MemoInfo> memos = loadMemosFromDB(day, month, year);
             for (MemoInfo memo : memos) {
                 JButton memoButton = new JButton(memo.getTitle());
                 memoButton.addActionListener(e -> {
@@ -399,7 +432,9 @@ public class Main extends javax.swing.JFrame {
             saveButton.addActionListener(e -> {
                 String title = titleField.getText();
                 String content = contentArea.getText();
-                saveMemo(day, month, year, title, content, chosenColor);
+                // MemoInfo 객체를 생성
+                MemoInfo newMemo = new MemoInfo(-1, title, content, chosenColor); // 새 메모의 경우 schedule_key는 -1 또는 다른 유효하지 않은 값으로 설정
+                saveMemo(userId, day, month, year, newMemo); // 수정된 saveMemo 메서드 호출
                 dispose();
                 ((Main)parent).updateCalendar();
             });
@@ -425,28 +460,113 @@ public class Main extends javax.swing.JFrame {
         }
     }
         // 메모와 색상을 저장하는 메서드의 예시입니다.
-        private void saveMemo(int day, int month, int year, String title, String content, Color color) {
-            String dateKey = year + "-" + String.format("%02d", (month+1)) + "-" + String.format("%02d", day);
-            ArrayList<MemoInfo> memos = memoData.getOrDefault(dateKey, new ArrayList<MemoInfo>());
-            memos.add(new MemoInfo(title, content, color));
-            memoData.put(dateKey, memos);
-            // 메모 저장 후 메모 목록을 업데이트합니다.
-            displayMemoList(getMemosForDate(day, month, year), day, month, year);
+        private void saveMemo(String userId, int day, int month, int year, MemoInfo memo) {
+            String formattedDate = String.format("%d-%02d-%02d", year, month + 1, day);
+            String sql;
+
+            // schedule_key가 존재하는지 확인하여 쿼리를 결정합니다.
+            if (memo.getSchedule_key() > 0) {
+                // 메모 업데이트
+                sql = "UPDATE Schedule SET title = ?, content = ?, color = ? WHERE schedule_key = ?";
+            } else {
+                // 새 메모 추가
+                sql = "INSERT INTO Schedule (id, date, title, content, color) VALUES (?, ?, ?, ?, ?)";
+            }
+
+            try {
+                DBM.dbOpen();
+                PreparedStatement pstmt = DBM.prepareStatement(sql);
+
+                // 파라미터 설정
+                if (memo.getSchedule_key() > 0) {
+                    // 업데이트 쿼리의 경우
+                    pstmt.setString(1, memo.getTitle());
+                    pstmt.setString(2, memo.getContent());
+                    pstmt.setString(3, colorToString(memo.getColor()));
+                    pstmt.setInt(4, memo.getSchedule_key());
+                } else {
+                    // 추가 쿼리의 경우
+                    pstmt.setString(1, userId);
+                    pstmt.setString(2, formattedDate);
+                    pstmt.setString(3, memo.getTitle());
+                    pstmt.setString(4, memo.getContent());
+                    pstmt.setString(5, colorToString(memo.getColor()));
+                }
+
+                pstmt.executeUpdate();
+                DBM.dbClose();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         
-        // 날짜별로 저장된 메모 정보를 가져오는 메서드를 수정합니다.
-        private ArrayList<MemoInfo> getMemosForDate(int day, int month, int year) {
-            String dateKey = year + "-" + String.format("%02d", (month+1)) + "-" + String.format("%02d", day);
-            return memoData.getOrDefault(dateKey, new ArrayList<MemoInfo>());
+        // HEX 색상 코드 문자열을 Color 객체로 변환하는 메서드
+        private Color stringToColor(String colorStr) {
+            return new Color(
+                Integer.valueOf(colorStr.substring(1, 3), 16),
+                Integer.valueOf(colorStr.substring(3, 5), 16),
+                Integer.valueOf(colorStr.substring(5, 7), 16));
+        }
+        
+        // 날짜별로 저장된 메모 정보를 가져오는 메서드
+        private ArrayList<MemoInfo> loadMemosFromDB(int day, int month, int year) {
+            ArrayList<MemoInfo> memos = new ArrayList<>();
+            String formattedDate = String.format("%d-%02d-%02d", year, month + 1, day);
+            String sql = "SELECT schedule_key, title, content, color FROM Schedule WHERE id = ? AND date = ?";
+            
+
+            try {
+                DBM.dbOpen();
+                PreparedStatement pstmt = DBM.prepareStatement(sql);
+                pstmt.setString(1, userId);
+                pstmt.setString(2, formattedDate);
+
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+                    int schedule_key = rs.getInt("schedule_key");
+                    String title = rs.getString("title");
+                    String content = rs.getString("content");
+                    Color color = stringToColor(rs.getString("color")); // 문자열을 Color 객체로 변환하는 메서드
+                    memos.add(new MemoInfo(schedule_key, title, content, color));
+                }
+
+                DBM.dbClose();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return memos;
+        }
+        
+        private void updateMemo(int scheduleKey, String title, String content, Color color) {
+            // 날짜 형식을 'YYYY-MM-DD'로 변환합니다.
+            String sql = "UPDATE Schedule SET title = ?, content = ?, color = ? WHERE schedule_key = ?";
+            try {
+                DBM.dbOpen();
+                PreparedStatement pstmt = DBM.prepareStatement(sql);
+
+                // 파라미터 설정
+                pstmt.setString(1, title);
+                pstmt.setString(2, content);
+                pstmt.setString(3, colorToString(color));
+                pstmt.setInt(4, scheduleKey);
+
+                pstmt.executeUpdate(); // SQL 쿼리 실행
+                DBM.dbClose();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         
         // 메모 정보를 저장하는 클래스입니다.
         class MemoInfo {
+            private int schedule_key;
             private String title; // 메모 제목
             private String content; // 메모 내용
             private Color color; // 메모 색상
 
-            public MemoInfo(String title, String content, Color color) {
+            public MemoInfo(int schedule_key, String title, String content, Color color) {
+                this.schedule_key = schedule_key;
                 this.title = title;
                 this.content = content;
                 this.color = color;
@@ -462,6 +582,10 @@ public class Main extends javax.swing.JFrame {
 
             public Color getColor() {
                 return color;
+            }
+            
+            public int getSchedule_key() {
+                return schedule_key;
             }
 
         }
