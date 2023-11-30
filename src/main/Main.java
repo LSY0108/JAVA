@@ -164,6 +164,7 @@ public class Main extends javax.swing.JFrame {
 
         // 새로운 메모 목록 창을 생성합니다.
         memoListDialog = new JDialog(this, "메모 목록", true);
+        memoListDialog.setTitle(String.format("메모 목록 - %d년 %d월 %d일", year, month + 1, day));
         memoListDialog.setLayout(new BorderLayout());
         memoListDialog.setSize(300, 400);
         memoListDialog.setLocationRelativeTo(this);
@@ -234,6 +235,7 @@ public class Main extends javax.swing.JFrame {
     // 메모 상세보기 및 편집 메서드
     private void displayMemoDetails(MemoInfo memo, int day, int month, int year) {
         JDialog memoDetailsDialog = new JDialog(this, "메모 상세보기", true);
+        memoDetailsDialog.setTitle(String.format("메모 상세보기 - %d년 %d월 %d일", year, month + 1, day));
         memoDetailsDialog.setLayout(new BorderLayout(10, 10)); // 여백을 추가합니다.
         memoDetailsDialog.setSize(350, 200);
         memoDetailsDialog.setLocationRelativeTo(this);
@@ -323,6 +325,7 @@ public class Main extends javax.swing.JFrame {
     // 메모 편집기 표시 메서드
     private void displayMemoEditor(MemoInfo memo, int day, int month, int year) {
         JDialog memoEditorDialog = new JDialog(this, "메모 편집기", true);
+        memoEditorDialog.setTitle(String.format("메모 편집기 - %d년 %d월 %d일", year, month + 1, day));
         memoEditorDialog.setLayout(new BorderLayout());
         memoEditorDialog.setSize(300, 400);
         memoEditorDialog.setLocationRelativeTo(this);
