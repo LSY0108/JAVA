@@ -378,6 +378,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="tf_cap1">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tf_cap1ActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lb_cap1">
         </Component>

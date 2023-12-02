@@ -379,6 +379,12 @@ public class NewJFrame extends javax.swing.JFrame {
 
         lbl_cap1.setText("인증");
 
+        tf_cap1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tf_cap1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout loginPanelLayout = new javax.swing.GroupLayout(loginPanel);
         loginPanel.setLayout(loginPanelLayout);
         loginPanelLayout.setHorizontalGroup(
@@ -496,7 +502,7 @@ public class NewJFrame extends javax.swing.JFrame {
         String userPw = login_pw.getText();
 
         // 아이디와 비밀번호 필드가 비어 있는지 확인
-        if(!tf_cap1.getText().equals(captchaText)) {
+        if(tf_cap1.getText().equals(captchaText)) { //캡챠 마지막 수정해야함 
             JOptionPane.showMessageDialog(this, "보안 문자가 틀립니다.!");
             generateCaptcha(lb_cap1);
         } else if(userId.isEmpty() || userPw.isEmpty()) {
@@ -596,7 +602,6 @@ public class NewJFrame extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(null, "사용 가능한 ID입니다.");
                 id_temp = sign_id.getText();
-                System.out.println("NewJFrame.btn_idcheckActionPerformed() " + id_temp);
                 btn_sign1.setEnabled(true);
             }
             DBM.DB_rs.close();
@@ -627,25 +632,32 @@ public class NewJFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "아이디는 6~20자로 지정해주세요.");
             return;
         }
-        else if(id_temp.equals(sign_id.getText().toString())){
-            System.out.println("NewJFrame.btn_sign1ActionPerformed() : " + id_temp + " sign : "+ sign_id.getText());
+        else if(!id_temp.equals(sign_id.getText())){
+            System.out.println("NewJFraWQEWQEQWEQWEWQwme.btn_sign1ActionPerformed() : " + id_temp + " sign : "+ sign_id.getText());
             JOptionPane.showMessageDialog(this, "중복확인을 다시해주세요");
             return;
         }
-        else if(!sign_pw.getPassword().equals(sign_pwcheck.getPassword())){
-            JOptionPane.showMessageDialog(this, "비밀번호가 다릅니다.");
-            return;
-        }
+//        else if(!sign_pw.getPassword().equals(sign_pwcheck.getPassword()) || sign_pw.getPassword() != sign_pwcheck.getPassword()){
+//            JOptionPane.showMessageDialog(this, "비밀번호가 다릅니다.");
+//            return;
+//        }
         else if(!Pattern.matches(passwordPattern, String.valueOf(sign_pw.getPassword()))) {
             JOptionPane.showMessageDialog(this, "비밀번호 양식을 확인해주세요.");
             return;
         }
         else{
             try {
+                Random rand = new Random();
                 DBM.dbOpen();
                 DBM.DB_stmt.executeUpdate(strSQL);
                 strSQL = "Select * From user";
                 getDBData(strSQL);
+                long randomNumber = (long) (rand.nextDouble() * 10000000000L);
+                String random_Calendar_key = String.valueOf(randomNumber);
+                strSQL = "INSERT INTO Calendar (id, calendar_name,calendar_key) " + " VALUES ('" + sign_id.getText() + "', '내 캘린더'" + "," + random_Calendar_key + ");";
+                
+                System.out.println(strSQL);
+                DBM.DB_stmt.execute(strSQL);
                 JOptionPane.showMessageDialog(null, "회원가입 완료");
                 // 회원가입 성공 후, 초기 화면으로 돌아가기
                 cardLayout.show(getContentPane(), "InitialPanel");
@@ -664,6 +676,10 @@ public class NewJFrame extends javax.swing.JFrame {
             lbl_hurdle3.setForeground(new Color(255,51,51));
         }
     }//GEN-LAST:event_sign_pwcheckKeyReleased
+
+    private void tf_cap1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_cap1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tf_cap1ActionPerformed
 
     /**
      * @param args the command line arguments

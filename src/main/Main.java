@@ -15,11 +15,24 @@ import java.util.List;
 public class Main extends javax.swing.JFrame {
     DB_MAN DBM = new DB_MAN();
     private String userId;
+    private int calendar_key = -1;
     
     private Calendar cal;
     private JLabel monthLabel;
     private JPanel calendarPanel;
     private JDialog memoListDialog = null;
+    
+    // 메뉴 바 필드
+    private JMenuBar menuBar;
+    private JMenu calendarMenu;
+    private JMenuItem MyCalendar;
+    private JMenuItem ShareCalendar;
+    
+    private JMenu settingMenu;
+    private JMenuItem CalendarSetting;
+    private JMenuItem MyInfoSetting;
+    private JMenuItem addCalendar;
+    
     
     // Color 객체를 HEX 색상 코드 문자열로 변환하는 메서드
     private String colorToString(Color color) {
@@ -32,7 +45,6 @@ public class Main extends javax.swing.JFrame {
     public Main(String userId) {
         this.userId = userId;
         initComponents();
-        
         
         setTitle("Calendar");
         setSize(900, 700);
@@ -50,7 +62,7 @@ public class Main extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cal.add(Calendar.MONTH, -1);
-                updateCalendar();
+                updateCalendar("내 캘린더");
             }
         });
 
@@ -59,7 +71,7 @@ public class Main extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cal.add(Calendar.MONTH, 1);
-                updateCalendar();
+                updateCalendar(" 내 캘린더");
             }
         });
 
@@ -82,10 +94,240 @@ public class Main extends javax.swing.JFrame {
         add(headerPanel, BorderLayout.NORTH);
         add(calendarPanel, BorderLayout.CENTER);
 
-        updateCalendar();
+        updateCalendar("내 캘린더");
+        // 메뉴 바 초기화
+        initializeMenuBar();
     }
 
-    private void updateCalendar() {
+    private void loadUserCalendars(String userId) {
+        List<String> calendarNames = getUserCalendars(userId);
+
+        // 메뉴 항목 초기화 전에 기존 항목을 지웁니다.
+        calendarMenu.removeAll();
+
+        // 데이터베이스에서 가져온 캘린더 이름으로 메뉴 항목을 생성합니다.
+        for(String calendarName : calendarNames){
+            JMenuItem calendarItem = new JMenuItem(calendarName);
+            calendarItem.addActionListener(e -> selectCalendar(calendarName));
+            calendarMenu.add(calendarItem);
+        }
+    }
+    
+    private List<String> getUserCalendars(String userId) {
+        String sql = "SELECT calendar_name FROM Calendar WHERE id = ?";
+        List<String> calendarNames = new ArrayList<>();
+
+        try {
+            DBM.dbOpen();
+            PreparedStatement pstmt = DBM.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                calendarNames.add(rs.getString("calendar_name"));
+            }
+            DBM.dbClose();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return calendarNames;
+    }
+    
+    private void selectCalendar(String calendarName) {
+        // 선택한 캘린더의 `calendar_key`를 검색합니다.
+        String sql = "SELECT calendar_key FROM Calendar WHERE id = ? AND calendar_name = ?";
+        try {
+            DBM.dbOpen();
+            PreparedStatement pstmt = DBM.prepareStatement(sql);
+            pstmt.setString(1, this.userId);
+            pstmt.setString(2, calendarName);
+            System.out.println("sql : " + pstmt);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                this.calendar_key = rs.getInt("calendar_key");
+                updateCalendar(calendarName); // 캘린더를 업데이트합니다.
+            } else {
+                JOptionPane.showMessageDialog(this, "선택한 캘린더가 존재하지 않습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+            }
+            DBM.dbClose();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "캘린더 선택 중 오류가 발생했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void initializeMenuBar() {
+        menuBar = new JMenuBar();
+    
+        // 캘린더 메뉴
+        calendarMenu = new JMenu("캘린더");
+        menuBar.add(calendarMenu); // 캘린더 메뉴를 메뉴 바에 추가
+        
+       // 설정 메뉴
+        settingMenu = new JMenu("설정");
+        CalendarSetting = new JMenuItem("캘린더 설정");
+        MyInfoSetting = new JMenuItem("내 정보 보기");
+        addCalendar = new JMenuItem("캘린더 추가");
+
+        // 설정 메뉴 아이템에 액션 리스너 추가
+        CalendarSetting.addActionListener(e -> CalendarSetting());
+        MyInfoSetting.addActionListener(e -> MyInfoSetting());
+        addCalendar.addActionListener(e -> addCalendar());
+
+        // 설정 메뉴에 메뉴 아이템 추가
+        settingMenu.add(CalendarSetting);
+        settingMenu.add(MyInfoSetting);
+        settingMenu.add(addCalendar);
+
+        // 메뉴 바에 설정 메뉴 추가
+        menuBar.add(settingMenu);
+
+        // 메뉴 바를 프레임에 추가
+        setJMenuBar(menuBar);
+
+        // 사용자 캘린더 불러오기 (사용자가 로그인 할 때 호출)
+        loadUserCalendars(this.userId);
+    }
+
+    private void MyCalendar() {
+        // 사용자 캘린더 불러오기
+        loadUserCalendars(this.userId);
+    }
+
+    private void ShareCalendar() {
+        // 공유캘린더 로직 구현
+    }
+    
+    private void CalendarSetting() {
+        // 캘린더 설정 대화상자에 필요한 컴포넌트를 초기화합니다.
+        JDialog calendarSettingDialog = new JDialog(this, "캘린더 설정", true);
+        calendarSettingDialog.setLayout(new FlowLayout());
+
+        JLabel keyLabel = new JLabel("선택한 캘린더 키: " + this.calendar_key);
+        JButton deleteButton = new JButton("삭제");
+
+        // 삭제 버튼 액션 리스너
+        deleteButton.addActionListener(e -> {
+                deleteCalendar(this.calendar_key); // 캘린더 삭제 메서드 호출
+                calendarSettingDialog.dispose(); // 설정 대화상자 닫기
+        });
+
+        calendarSettingDialog.add(keyLabel);
+        calendarSettingDialog.add(deleteButton);
+
+        calendarSettingDialog.pack();
+        calendarSettingDialog.setLocationRelativeTo(this);
+        calendarSettingDialog.setVisible(true);
+    }
+    
+    private void MyInfoSetting() {
+        // 나의 정보 설정 로직 구현
+    }
+    
+    private void addCalendar() {
+        // 캘린더 이름을 입력받는 대화상자를 생성
+        String calendarName = JOptionPane.showInputDialog(this, "새 캘린더 이름을 입력하세요:");
+
+        // 사용자가 취소를 누르지 않고 이름을 입력했다면 데이터베이스에 저장
+        if (calendarName != null && !calendarName.trim().isEmpty()) {
+            saveNewCalendar(this.userId, calendarName);
+        }
+    }
+    
+    private void saveNewCalendar(String userId, String calendarName) {
+        String sqlInsert = "INSERT INTO Calendar (id, calendar_name) VALUES (?, ?)";
+        String sqlSelectKey = "SELECT calendar_key FROM Calendar WHERE id = ? AND calendar_name = ?";
+
+        try {
+            DBM.dbOpen();
+            // 새 캘린더를 데이터베이스에 추가합니다.
+            PreparedStatement pstmtInsert = DBM.prepareStatement(sqlInsert);
+            pstmtInsert.setString(1, userId);
+            pstmtInsert.setString(2, calendarName);
+            pstmtInsert.executeUpdate();
+
+            // 새로 추가한 캘린더의 `calendar_key`를 검색합니다.
+            PreparedStatement pstmtSelectKey = DBM.prepareStatement(sqlSelectKey);
+            pstmtSelectKey.setString(1, userId);
+            pstmtSelectKey.setString(2, calendarName);
+            ResultSet rs = pstmtSelectKey.executeQuery();
+
+            if (rs.next()) {
+                int newCalendarKey = rs.getInt("calendar_key");
+                // 새 캘린더를 선택하고 화면에 표시합니다.
+                this.calendar_key = newCalendarKey;
+                updateCalendar(calendarName); // 캘린더를 업데이트합니다.
+            }
+            DBM.dbClose();
+
+            // 캘린더 메뉴를 업데이트합니다.
+            loadUserCalendars(userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "캘린더 추가에 실패했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    
+    private int getMyCalendarKey(String userId, String cal_name) {
+        String sql = "SELECT calendar_key FROM Calendar WHERE id = ? AND calendar_name = ?";
+        
+
+        try {
+            DBM.dbOpen();
+            PreparedStatement pstmt = DBM.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            pstmt.setString(2, cal_name);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                calendar_key = rs.getInt("calendar_key");
+            }
+
+            DBM.dbClose();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return calendar_key;
+    }
+    
+    private void deleteCalendar(int calendarKey) {
+           // 사용자에게 캘린더 삭제 확인을 요청합니다.
+          int response = JOptionPane.showConfirmDialog(this, "캘린더를 삭제하시겠습니까?", "삭제 확인", JOptionPane.YES_NO_OPTION);
+
+          // '예'를 선택한 경우에만 삭제를 진행합니다.
+          if (response == JOptionPane.YES_OPTION) {
+              String sql = "DELETE FROM Calendar WHERE calendar_key = ?";
+
+              try {
+                  DBM.dbOpen();
+                  PreparedStatement pstmt = DBM.prepareStatement(sql);
+                  pstmt.setInt(1, calendarKey);
+                  int result = pstmt.executeUpdate();
+                  DBM.dbClose();
+
+                  if (result > 0) {
+                      // 삭제 성공 메시지를 표시합니다.
+                      JOptionPane.showMessageDialog(this, "캘린더가 삭제되었습니다.");
+
+                      // 삭제된 캘린더를 메뉴에서 제거합니다.
+                      loadUserCalendars(this.userId);
+
+                      // '내 캘린더' 뷰로 돌아갑니다.
+                      updateCalendar("내 캘린더"); // 캘린더 화면을 갱신합니다.
+                  } else {
+                      // 삭제 실패 메시지를 표시합니다.
+                      JOptionPane.showMessageDialog(this, "캘린더 삭제에 실패했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+                  }
+              } catch (SQLException e) {
+                  e.printStackTrace();
+                  JOptionPane.showMessageDialog(this, "캘린더 삭제 중 오류가 발생했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+              }
+          }
+    }
+    
+    private void updateCalendar(String cal_name) {
         calendarPanel.removeAll();
         calendarPanel.setBackground(new Color(244, 243, 243)); 
         String[] days = {"일", "월", "화", "수", "목", "금", "토"};
@@ -96,7 +338,11 @@ public class Main extends javax.swing.JFrame {
         int month = cal.get(Calendar.MONTH);
         int year = cal.get(Calendar.YEAR);
         monthLabel.setText(String.format("%tB %d", cal, year));
-
+        
+        // 현재 로그인한 사용자의 '내 캘린더'에 해당하는 calendar_key를 가져옵니다.
+        calendar_key = getMyCalendarKey(userId,cal_name);
+        System.out.println("새로 바뀌는 구역 c_key" + calendar_key);
+        
         Calendar tempCal = new GregorianCalendar(year, month, 1);
         int startDay = tempCal.get(Calendar.DAY_OF_WEEK);
         int daysInMonth = tempCal.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -122,7 +368,7 @@ public class Main extends javax.swing.JFrame {
             datePanel.add(dayLabel);
 
             // 날짜별로 저장된 메모의 색상 띠를 가져옵니다.
-            ArrayList<MemoInfo> memos = loadMemosFromDB(day, month, year);
+            ArrayList<MemoInfo> memos = loadMemosFromDB(this.calendar_key, day, month, year);
             if (!memos.isEmpty()) {
                 datePanel.add(Box.createVerticalStrut(1));
                 for (MemoInfo memo : memos) {
@@ -139,7 +385,7 @@ public class Main extends javax.swing.JFrame {
             datePanel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    ArrayList<MemoInfo> memos = loadMemosFromDB(day, month, year);
+                    ArrayList<MemoInfo> memos = loadMemosFromDB(calendar_key);
                     if (memos.isEmpty()) {
                         displayMemoEditor(null, day, month, year);
                     } else {
@@ -178,7 +424,7 @@ public class Main extends javax.swing.JFrame {
             if (!e.getValueIsAdjusting()) {
                 MemoInfo selectedMemo = memoList.getSelectedValue();
                 if (selectedMemo != null) {
-                    displayMemoDetails(selectedMemo, day, month, year);
+                    displayMemoDetails(calendar_key, selectedMemo, day, month, year);
                 }
             }
         });
@@ -232,8 +478,28 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
+    private String cal_keyToCal_name(int calendar_key){
+        String sql = "SELECT ? FROM Calendar WHERE calendar_key = ?";
+        String c_key = null;
+            try {
+                DBM.dbOpen();
+                PreparedStatement pstmt = DBM.prepareStatement(sql);
+                pstmt.setString(1, "calendar_name");
+                pstmt.setInt(2, calendar_key);
+
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+                    c_key = rs.getString("calendar_name");
+                }
+
+                DBM.dbClose();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return c_key;
+    }
     // 메모 상세보기 및 편집 메서드
-    private void displayMemoDetails(MemoInfo memo, int day, int month, int year) {
+    private void displayMemoDetails(int calendar_key, MemoInfo memo, int day, int month, int year) {
         JDialog memoDetailsDialog = new JDialog(this, "메모 상세보기", true);
         memoDetailsDialog.setTitle(String.format("메모 상세보기 - %d년 %d월 %d일", year, month + 1, day));
         memoDetailsDialog.setLayout(new BorderLayout(10, 10)); // 여백을 추가합니다.
@@ -279,11 +545,11 @@ public class Main extends javax.swing.JFrame {
         deleteButton.addActionListener(e -> {
             deleteMemo(memo.getSchedule_key());
             memoDetailsDialog.dispose();
-            updateCalendar();
+            updateCalendar(cal_keyToCal_name(calendar_key));
             if (memoListDialog != null) {
                 memoListDialog.dispose();
             }
-            displayMemoList(loadMemosFromDB(day, month, year), day, month, year);
+            displayMemoList(loadMemosFromDB(calendar_key), day, month, year);
         });
 
         buttonPanel.add(backButton);
@@ -359,10 +625,10 @@ public class Main extends javax.swing.JFrame {
             saveMemo(userId, day, month, year, updatedMemo);
 
             memoEditorDialog.dispose();
-            updateCalendar();
+            updateCalendar(cal_keyToCal_name(calendar_key));
 
             // 메모 목록을 업데이트합니다.
-            ArrayList<MemoInfo> updatedMemos = loadMemosFromDB(day, month, year);
+            ArrayList<MemoInfo> updatedMemos = loadMemosFromDB(calendar_key);
             displayMemoList(updatedMemos, day, month, year);
         });
         buttonPanel.add(saveButton);
@@ -409,7 +675,7 @@ public class Main extends javax.swing.JFrame {
             add(scheduleListPanel, BorderLayout.CENTER);
 
             // 저장된 일정을 리스트에 표시합니다.
-            ArrayList<MemoInfo> memos = loadMemosFromDB(day, month, year);
+            ArrayList<MemoInfo> memos = loadMemosFromDB(calendar_key);
             for (MemoInfo memo : memos) {
                 JButton memoButton = new JButton(memo.getTitle());
                 memoButton.addActionListener(e -> {
@@ -439,7 +705,7 @@ public class Main extends javax.swing.JFrame {
                 MemoInfo newMemo = new MemoInfo(-1, title, content, chosenColor); // 새 메모의 경우 schedule_key는 -1 또는 다른 유효하지 않은 값으로 설정
                 saveMemo(userId, day, month, year, newMemo); // 수정된 saveMemo 메서드 호출
                 dispose();
-                ((Main)parent).updateCalendar();
+                ((Main)parent).updateCalendar(cal_keyToCal_name(calendar_key));
             });
             buttonPanel.add(saveButton);
 
@@ -473,14 +739,13 @@ public class Main extends javax.swing.JFrame {
                 sql = "UPDATE Schedule SET title = ?, content = ?, color = ? WHERE schedule_key = ?";
             } else {
                 // 새 메모 추가
-                sql = "INSERT INTO Schedule (id, date, title, content, color) VALUES (?, ?, ?, ?, ?)";
+                sql = "INSERT INTO Schedule (id, date, title, content, color, calendar_key) VALUES (?, ?, ?, ?, ?, ?)";
             }
 
             try {
                 DBM.dbOpen();
                 PreparedStatement pstmt = DBM.prepareStatement(sql);
 
-                // 파라미터 설정
                 if (memo.getSchedule_key() > 0) {
                     // 업데이트 쿼리의 경우
                     pstmt.setString(1, memo.getTitle());
@@ -488,12 +753,13 @@ public class Main extends javax.swing.JFrame {
                     pstmt.setString(3, colorToString(memo.getColor()));
                     pstmt.setInt(4, memo.getSchedule_key());
                 } else {
-                    // 추가 쿼리의 경우
+                    // 새 일정 추가 쿼리의 경우
                     pstmt.setString(1, userId);
                     pstmt.setString(2, formattedDate);
                     pstmt.setString(3, memo.getTitle());
                     pstmt.setString(4, memo.getContent());
                     pstmt.setString(5, colorToString(memo.getColor()));
+                    pstmt.setInt(6, calendar_key);
                 }
 
                 pstmt.executeUpdate();
@@ -511,17 +777,43 @@ public class Main extends javax.swing.JFrame {
                 Integer.valueOf(colorStr.substring(5, 7), 16));
         }
         
-        // 날짜별로 저장된 메모 정보를 가져오는 메서드
-        private ArrayList<MemoInfo> loadMemosFromDB(int day, int month, int year) {
+        // 메모 정보를 가져오는 메서드
+        private ArrayList<MemoInfo> loadMemosFromDB(int calendarKey) {
             ArrayList<MemoInfo> memos = new ArrayList<>();
-            String formattedDate = String.format("%d-%02d-%02d", year, month + 1, day);
-            String sql = "SELECT schedule_key, title, content, color FROM Schedule WHERE id = ? AND date = ?";
-            
+            String sql = "SELECT schedule_key, title, content, color FROM Schedule WHERE calendar_key = ?";
 
             try {
                 DBM.dbOpen();
                 PreparedStatement pstmt = DBM.prepareStatement(sql);
-                pstmt.setString(1, userId);
+                pstmt.setInt(1, calendarKey);
+
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+                    int schedule_key = rs.getInt("schedule_key");
+                    String title = rs.getString("title");
+                    String content = rs.getString("content");
+                    Color color = stringToColor(rs.getString("color"));
+                    memos.add(new MemoInfo(schedule_key, title, content, color));
+                }
+
+                DBM.dbClose();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return memos;
+        }
+        
+        // 새로운 오버로드된 메서드
+        private ArrayList<MemoInfo> loadMemosFromDB(int calendarKey, int day, int month, int year) {
+            ArrayList<MemoInfo> memos = new ArrayList<>();
+            String formattedDate = String.format("%d-%02d-%02d", year, month + 1, day);
+            String sql = "SELECT schedule_key, title, content, color FROM Schedule WHERE calendar_key = ? AND date = ?";
+
+            try {
+                DBM.dbOpen();
+                PreparedStatement pstmt = DBM.prepareStatement(sql);
+                pstmt.setInt(1, calendarKey);
                 pstmt.setString(2, formattedDate);
 
                 ResultSet rs = pstmt.executeQuery();
@@ -529,7 +821,7 @@ public class Main extends javax.swing.JFrame {
                     int schedule_key = rs.getInt("schedule_key");
                     String title = rs.getString("title");
                     String content = rs.getString("content");
-                    Color color = stringToColor(rs.getString("color")); // 문자열을 Color 객체로 변환하는 메서드
+                    Color color = stringToColor(rs.getString("color"));
                     memos.add(new MemoInfo(schedule_key, title, content, color));
                 }
 
