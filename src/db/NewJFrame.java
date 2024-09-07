@@ -1,5 +1,6 @@
 package db;
 
+import java.util.Arrays;
 import db.DB_MAN;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -37,8 +38,6 @@ public class NewJFrame extends javax.swing.JFrame {
     public NewJFrame() {
         initComponents();
         
-        generateCaptcha(lb_cap);
-        generateCaptcha(lb_cap1);
         // 프레임의 크기를 고정하고 싶은 경우
         setSize(900, 700); // 가로 600, 세로 400 픽셀로 설정
         setResizable(false); // 크기 조정 불가능하게 설정
@@ -175,12 +174,12 @@ public class NewJFrame extends javax.swing.JFrame {
         lbl_id = new javax.swing.JLabel();
         lbl_pw = new javax.swing.JLabel();
         login_id = new javax.swing.JTextField();
-        login_pw = new javax.swing.JTextField();
         btn_login1 = new javax.swing.JButton();
         login_back = new javax.swing.JButton();
         lbl_cap1 = new javax.swing.JLabel();
         tf_cap1 = new javax.swing.JTextField();
         lb_cap1 = new javax.swing.JLabel();
+        login_pw = new javax.swing.JPasswordField();
         btn_login = new javax.swing.JButton();
         btn_sign = new javax.swing.JButton();
 
@@ -385,6 +384,17 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
+        login_pw.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                login_pwActionPerformed(evt);
+            }
+        });
+        login_pw.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                login_pwKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout loginPanelLayout = new javax.swing.GroupLayout(loginPanel);
         loginPanel.setLayout(loginPanelLayout);
         loginPanelLayout.setHorizontalGroup(
@@ -402,19 +412,21 @@ public class NewJFrame extends javax.swing.JFrame {
                             .addComponent(lbl_id)
                             .addComponent(lbl_pw))
                         .addGap(76, 76, 76)
-                        .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(login_pw, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(login_id, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(login_id, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(loginPanelLayout.createSequentialGroup()
                         .addGap(185, 185, 185)
                         .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginPanelLayout.createSequentialGroup()
-                                .addComponent(lbl_cap1)
-                                .addGap(89, 89, 89)
-                                .addComponent(lb_cap1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginPanelLayout.createSequentialGroup()
-                                .addComponent(tf_cap1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(100, 100, 100))))
+                            .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginPanelLayout.createSequentialGroup()
+                                    .addComponent(lbl_cap1)
+                                    .addGap(89, 89, 89)
+                                    .addComponent(lb_cap1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginPanelLayout.createSequentialGroup()
+                                    .addComponent(tf_cap1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(100, 100, 100)))
+                            .addGroup(loginPanelLayout.createSequentialGroup()
+                                .addGap(113, 113, 113)
+                                .addComponent(login_pw))))
                     .addGroup(loginPanelLayout.createSequentialGroup()
                         .addGap(315, 315, 315)
                         .addComponent(btn_login1)))
@@ -431,7 +443,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_id)
                     .addComponent(login_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(108, 108, 108)
+                .addGap(105, 105, 105)
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_pw)
                     .addComponent(login_pw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -443,7 +455,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addComponent(tf_cap1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(63, 63, 63)
                 .addComponent(btn_login1)
-                .addContainerGap(212, Short.MAX_VALUE))
+                .addContainerGap(215, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -488,41 +500,55 @@ public class NewJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_loginActionPerformed
+        generateCaptcha(lb_cap1);
         cardLayout.show(getContentPane(), "LoginPanel");
     }//GEN-LAST:event_btn_loginActionPerformed
 
         
     private void btn_signActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_signActionPerformed
+        generateCaptcha(lb_cap);
         cardLayout.show(getContentPane(), "SignPanel");
     }//GEN-LAST:event_btn_signActionPerformed
 
+    //로그인
     private void btn_login1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_login1ActionPerformed
         // 사용자가 입력한 아이디와 비밀번호
         String userId = login_id.getText();
         String userPw = login_pw.getText();
 
         // 아이디와 비밀번호 필드가 비어 있는지 확인
-        if(tf_cap1.getText().equals(captchaText)) { //캡챠 마지막 수정해야함 
+        if(!tf_cap1.getText().trim().equals(captchaText.trim())) { 
             JOptionPane.showMessageDialog(this, "보안 문자가 틀립니다.!");
             generateCaptcha(lb_cap1);
         } else if(userId.isEmpty() || userPw.isEmpty()) {
             JOptionPane.showMessageDialog(null, "아이디와 비밀번호를 입력해주세요.");
-        } 
-        else {
-            // 데이터베이스에서 사용자 정보를 조회하는 SQL 쿼리
-            String strSQL = "SELECT * FROM user WHERE id = '" + userId + "' AND pw = '" + userPw + "'";
+        } else {
+            // 데이터베이스에서 사용자 정보를 조회하는 SQL 쿼리 (비밀번호 비교 제외)
+            String strSQL = "SELECT * FROM user WHERE BINARY id = '" + userId + "'";
             try {
                 DBM.dbOpen();
                 DBM.DB_rs = DBM.DB_stmt.executeQuery(strSQL);
-                
-                if(DBM.DB_rs.next()) { // 결과가 있으면 로그인 성공
-                    JOptionPane.showMessageDialog(null, "로그인에 성공하였습니다.");
-                    // 여기에 로그인 성공 후의 로직을 추가하세요.
-                    Main main = new Main(userId); // Main 객체 생성
-                    main.setVisible(true); // NewJFrame을 표시합니다.
-                    this.setVisible(false); // 로그인 창을 숨깁니다.
-                    this.dispose(); // 로그인 창의 자원을 해제합니다.
-                } else { // 결과가 없으면 로그인 실패
+
+                if(DBM.DB_rs.next()) { 
+                    // 데이터베이스에서 검색된 비밀번호
+                    String dbUserPw = DBM.DB_rs.getString("pw");
+
+                    // 입력된 비밀번호와 데이터베이스의 비밀번호가 정확히 일치하는지 확인
+                    if(userPw.equals(dbUserPw)) {
+                        // 로그인 성공
+                        JOptionPane.showMessageDialog(null, "로그인에 성공하였습니다.");
+                        Main main = new Main(userId); 
+                        main.setVisible(true);
+                        this.setVisible(false);
+                        this.dispose();
+                    } else {
+                        // 비밀번호가 일치하지 않음
+                        generateCaptcha(lb_cap1);
+                        JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호가 일치하지 않습니다.");
+                    }
+                } else { 
+                    // 아이디가 존재하지 않음
+                    generateCaptcha(lb_cap1);
                     JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호가 일치하지 않습니다.");
                 }
 
@@ -531,8 +557,8 @@ public class NewJFrame extends javax.swing.JFrame {
             } catch (Exception e) {
                 System.out.println("SQLException: " + e.getMessage());
                 JOptionPane.showMessageDialog(null, "로그인 처리 중 오류가 발생했습니다.");
+                }
             }
-        }
     }//GEN-LAST:event_btn_login1ActionPerformed
 
     private void login_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_login_backActionPerformed
@@ -543,6 +569,7 @@ public class NewJFrame extends javax.swing.JFrame {
         cardLayout.show(getContentPane(), "InitialPanel");
     }//GEN-LAST:event_btn_back2ActionPerformed
 
+    //생일 입력필드
     private void sign_birthKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sign_birthKeyReleased
         String birth = sign_birth.getText();
 
@@ -583,6 +610,7 @@ public class NewJFrame extends javax.swing.JFrame {
         cardLayout.show(getContentPane(), "InitialPanel");
     }//GEN-LAST:event_sign_pwActionPerformed
 
+    //아이디 중복 검사
     private void btn_idcheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_idcheckActionPerformed
         String ID = sign_id.getText();
         strSQL = "SELECT id FROM user WHERE id = '" + ID + "'";
@@ -611,6 +639,7 @@ public class NewJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btn_idcheckActionPerformed
 
+    //회원가입
     private void btn_sign1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sign1ActionPerformed
         strSQL = "Insert Into user Values (";
         strSQL += "'" + sign_id.getText() + "', ";
@@ -619,6 +648,7 @@ public class NewJFrame extends javax.swing.JFrame {
         strSQL += "'" + sign_birth.getText() + "')";
         String passwordPattern = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).*$";
         
+        //예외처리
         if(sign_id.getText().isEmpty() || sign_birth.getText().isEmpty() || sign_name.getText().isEmpty() || sign_pw.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "모든 입력란을 채워주세요.");
             return;
@@ -626,24 +656,24 @@ public class NewJFrame extends javax.swing.JFrame {
         else if (!tf_cap.getText().equals(captchaText)) {
             JOptionPane.showMessageDialog(this, "보안 문자가 틀립니다.");
             generateCaptcha(lb_cap);
-            return;
         }
         else if(5 > sign_id.toString().length() &&  20 <= sign_id.toString().length()){
             JOptionPane.showMessageDialog(this, "아이디는 6~20자로 지정해주세요.");
-            return;
+            generateCaptcha(lb_cap);
         }
         else if(!id_temp.equals(sign_id.getText())){
             System.out.println("NewJFraWQEWQEQWEQWEWQwme.btn_sign1ActionPerformed() : " + id_temp + " sign : "+ sign_id.getText());
             JOptionPane.showMessageDialog(this, "중복확인을 다시해주세요");
-            return;
+            generateCaptcha(lb_cap);
         }
-//        else if(!sign_pw.getPassword().equals(sign_pwcheck.getPassword()) || sign_pw.getPassword() != sign_pwcheck.getPassword()){
-//            JOptionPane.showMessageDialog(this, "비밀번호가 다릅니다.");
-//            return;
-//        }
+        else if(!Arrays.equals(sign_pw.getPassword(), sign_pwcheck.getPassword())){
+            JOptionPane.showMessageDialog(this, "비밀번호가 다릅니다.");
+            generateCaptcha(lb_cap);
+        }
         else if(!Pattern.matches(passwordPattern, String.valueOf(sign_pw.getPassword()))) {
             JOptionPane.showMessageDialog(this, "비밀번호 양식을 확인해주세요.");
-            return;
+            generateCaptcha(lb_cap);
+
         }
         else{
             try {
@@ -652,15 +682,15 @@ public class NewJFrame extends javax.swing.JFrame {
                 DBM.DB_stmt.executeUpdate(strSQL);
                 strSQL = "Select * From user";
                 getDBData(strSQL);
-                long randomNumber = (long) (rand.nextDouble() * 10000000000L);
+                int randomNumber = (int) (rand.nextDouble() * 1000000); // 캘린더 접속을 위한 랜덤 calendar_key 생성
                 String random_Calendar_key = String.valueOf(randomNumber);
-                strSQL = "INSERT INTO Calendar (id, calendar_name,calendar_key) " + " VALUES ('" + sign_id.getText() + "', '내 캘린더'" + "," + random_Calendar_key + ");";
-                
-                System.out.println(strSQL);
+                strSQL = "INSERT INTO Calendar (id, calendar_name,calendar_key) " + " VALUES ('" + 
+                                                    sign_id.getText() + "', '내 캘린더'" + "," + random_Calendar_key + ");";
+                //생성한 키로 db 저장
                 DBM.DB_stmt.execute(strSQL);
-                JOptionPane.showMessageDialog(null, "회원가입 완료");
+                JOptionPane.showMessageDialog(null, "회원가입 완료"); 
                 // 회원가입 성공 후, 초기 화면으로 돌아가기
-                cardLayout.show(getContentPane(), "InitialPanel");
+                cardLayout.show(getContentPane(), "InitialPanel"); 
                 DBM.dbClose();
             } catch (Exception e) {
                 System.out.println("SQLException: " + e.getMessage());
@@ -680,6 +710,14 @@ public class NewJFrame extends javax.swing.JFrame {
     private void tf_cap1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_cap1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tf_cap1ActionPerformed
+
+    private void login_pwKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_login_pwKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_login_pwKeyReleased
+
+    private void login_pwActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_login_pwActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_login_pwActionPerformed
 
     /**
      * @param args the command line arguments
@@ -743,7 +781,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel loginPanel;
     private javax.swing.JButton login_back;
     private javax.swing.JTextField login_id;
-    private javax.swing.JTextField login_pw;
+    private javax.swing.JPasswordField login_pw;
     private javax.swing.JPanel signPanel;
     private javax.swing.JTextField sign_birth;
     private javax.swing.JTextField sign_id;

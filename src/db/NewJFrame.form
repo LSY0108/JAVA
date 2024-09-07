@@ -276,22 +276,25 @@
                               <Component id="lbl_pw" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="login_pw" min="-2" pref="317" max="-2" attributes="0"/>
-                              <Component id="login_id" min="-2" pref="317" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="login_id" min="-2" pref="317" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="185" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="lbl_cap1" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="89" max="-2" attributes="0"/>
-                                  <Component id="lb_cap1" min="-2" pref="247" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="lbl_cap1" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="89" max="-2" attributes="0"/>
+                                      <Component id="lb_cap1" min="-2" pref="247" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="tf_cap1" min="-2" pref="147" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="100" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="tf_cap1" min="-2" pref="147" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="100" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="113" max="-2" attributes="0"/>
+                                  <Component id="login_pw" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -317,7 +320,7 @@
                       <Component id="lbl_id" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="login_id" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="108" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="105" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lbl_pw" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="login_pw" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -331,7 +334,7 @@
                   <Component id="tf_cap1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                   <Component id="btn_login1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="212" max="32767" attributes="0"/>
+                  <EmptySpace pref="215" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -353,8 +356,6 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="login_id">
-        </Component>
-        <Component class="javax.swing.JTextField" name="login_pw">
         </Component>
         <Component class="javax.swing.JButton" name="btn_login1">
           <Properties>
@@ -383,6 +384,12 @@
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lb_cap1">
+        </Component>
+        <Component class="javax.swing.JPasswordField" name="login_pw">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="login_pwActionPerformed"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="login_pwKeyReleased"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
